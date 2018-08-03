@@ -10,9 +10,6 @@ import config
 
 log = logging.getLogger(__name__)
 
-
-
-
 try:
     if config.max31855 + config.max6675 + config.max31855spi > 1:
         log.error("choose (only) one converter IC")
@@ -57,7 +54,6 @@ except ImportError:
 class Oven (threading.Thread):
     STATE_IDLE = "IDLE"
     STATE_RUNNING = "RUNNING"
-   
     
     def __init__(self, simulate=False, time_step=config.sensor_time_wait):
         threading.Thread.__init__(self)
@@ -124,7 +120,7 @@ class Oven (threading.Thread):
                 log.info("running at %.1f deg C (Target: %.1f) , heat %.2f, air %.2f, (%.1fs/%.0f)" % (self.temp_sensor.temperature, self.target, self.heat, self.air, self.runtime, self.totaltime))	#DISABLED DOOR AND COOLING
                 if self.target <= 0:
                     now = datetime.datetime.now()
-                    nameDir = os.path.join('/mnt/logs', "Date_" + now.strftime("%Y-%m-%d") + ".txt")
+                    nameDir = os.path.join('/mnt/logs', "Date_" + now.strftime("%Y-%m-%d_%H:%M") + ".txt")
 		    f = open(nameDir, 'a')
 		    f.write(now.strftime("%Y-%m-%d %H:%M"))
 		    f.write("\tProfile: " + self.profile.name)
