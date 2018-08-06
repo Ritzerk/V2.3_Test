@@ -255,6 +255,14 @@ function abortTask()
     ws_control.send(JSON.stringify(cmd));
 }
 
+function switchOff()
+{
+    if (confirm("Would you like to shut down the system?")) {
+        var cmd = {"cmd":"SHUTDOWN"};
+        ws_control.send(JSON.stringify(cmd))
+    }
+}
+
 function enterNewMode()
 {
     state="EDIT"
