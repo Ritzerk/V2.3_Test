@@ -88,6 +88,7 @@ class Oven (threading.Thread):
 	self.set_buzz(False)
         self.pid = PID(ki=config.pid_ki, kd=config.pid_kd, kp=config.pid_kp)
 	
+	
 
     def run_profile(self, profile):
         log.info("Running profile %s" % profile.name)
@@ -120,17 +121,17 @@ class Oven (threading.Thread):
                 log.info("running at %.1f deg C (Target: %.1f) , heat %.2f, air %.2f, (%.1fs/%.0f)" % (self.temp_sensor.temperature, self.target, self.heat, self.air, self.runtime, self.totaltime))	#DISABLED DOOR AND COOLING
                 if self.target <= 0:
                     now = datetime.datetime.now()
-                    nameDir = os.path.join('/mnt/logs', "Date_" + now.strftime("%Y-%m-%d_%H:%M") + ".txt")
+                    nameDir = os.path.join('/mnt/logs', "Date_" + now.strftime("%Y-%m-%d_%H.%M") + ".txt")
 		    f = open(nameDir, 'a')
 		    f.write(now.strftime("%Y-%m-%d %H:%M"))
-		    f.write("\tProfile: " + self.profile.name)
-	            f.write('\n\n')
-	            f.write('\tTime(s)\tTemperature(C)\n')
+		    f.write("Profile:," + self.profile.name)
+	            #f.write('\n\n')
+	            f.write('Time(s), Temperature(C)')
 		self.lastTarget = self.target
 		self.target = self.profile.get_target_temperature(self.runtime)
                 pid = self.pid.compute(self.target, self.temp_sensor.temperature)
 		
-		f.write('\t%.1f\t%.1f\n' % (self.runtime, self.temp_sensor.temperature))
+		f.write('%.1f, %.1f' % (self.runtime, self.temp_sensor.temperature))
                 log.info("pid: %.3f" % pid)
 				
 		if ((self.target < self.lastTarget) and (self.cooling == 1)):
@@ -174,7 +175,7 @@ class Oven (threading.Thread):
 		    time.sleep(1)
 		    self.set_buzz(False)
 		    time.sleep(1)
-		    f.write('\n')
+		    #f.write('\n')
 		    f.close()
                     self.reset()
             
