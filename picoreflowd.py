@@ -86,6 +86,9 @@ def handle_control():
             elif msgdict.get("cmd") == "STOP":
                 log.info("Stop command received")
                 oven.abort_run()
+            elif msgdict.get("cmd") == "SHUTDOWN":
+                log.info("Shutdown command received")
+                os.system('systemctl poweroff')
         except WebSocketError:
             break
     log.info("websocket (control) closed")
