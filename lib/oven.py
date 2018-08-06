@@ -119,19 +119,19 @@ class Oven (threading.Thread):
                     runtime_delta = datetime.datetime.now() - self.start_time
                     self.runtime = runtime_delta.total_seconds()
                 log.info("running at %.1f deg C (Target: %.1f) , heat %.2f, air %.2f, (%.1fs/%.0f)" % (self.temp_sensor.temperature, self.target, self.heat, self.air, self.runtime, self.totaltime))	#DISABLED DOOR AND COOLING
-                if self.target <= 0:
-                    now = datetime.datetime.now()
-                    nameDir = os.path.join('/mnt/logging', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
-		    f = open(nameDir, 'a')
-		    f.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
-		    f.write("Profile: " + self.profile.name + "\n")
+                #if self.target <= 0:
+                    #now = datetime.datetime.now()
+                    #nameDir = os.path.join('/mnt/logging', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
+		    #f = open(nameDir, 'a')
+		    #f.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
+		    #f.write("Profile: " + self.profile.name + "\n")
 	            #f.write('\n\n')
-	            f.write('Time(s),Temperature(C)\n')
+	            #f.write('Time(s),Temperature(C)\n')
 		self.lastTarget = self.target
 		self.target = self.profile.get_target_temperature(self.runtime)
                 pid = self.pid.compute(self.target, self.temp_sensor.temperature)
 		
-		f.write('%.1f,%.1f\n' % (self.runtime, self.temp_sensor.temperature))
+		#f.write('%.1f,%.1f\n' % (self.runtime, self.temp_sensor.temperature))
                 log.info("pid: %.3f" % pid)
 				
 		if ((self.target < self.lastTarget) and (self.cooling == 1)):
@@ -144,7 +144,7 @@ class Oven (threading.Thread):
 		    self.set_buzz(True)
 		    time.sleep(0.5)
 		    self.set_buzz(False)
-		    self.cooling = 0	
+		    self.cooling = 0
 				
                 if(pid > 0):
                     # The temp should be changing with the heat on
@@ -175,8 +175,8 @@ class Oven (threading.Thread):
 		    time.sleep(1)
 		    self.set_buzz(False)
 		    time.sleep(1)
-		    f.write('\n')
-		    f.close()
+		    #f.write('\n')
+		    #f.close()
                     self.reset()
             
             if pid > 0:
