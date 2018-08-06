@@ -131,7 +131,7 @@ class Oven (threading.Thread):
 		self.target = self.profile.get_target_temperature(self.runtime)
                 pid = self.pid.compute(self.target, self.temp_sensor.temperature)
 		
-		f.write('%.1f,%.1f' % (self.runtime, self.temp_sensor.temperature))
+		f.write('%.1f,%.1f\n' % (self.runtime, self.temp_sensor.temperature))
                 log.info("pid: %.3f" % pid)
 				
 		if ((self.target < self.lastTarget) and (self.cooling == 1)):
