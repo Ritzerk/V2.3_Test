@@ -123,15 +123,15 @@ class Oven (threading.Thread):
                     now = datetime.datetime.now()
                     nameDir = os.path.join('/mnt/logs', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
 		    f = open(nameDir, 'a')
-		    f.write(now.strftime("%Y-%m-%d %H:%M"))
-		    f.write("Profile:," + self.profile.name)
+		    f.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
+		    f.write("Profile: " + self.profile.name + "\n")
 	            #f.write('\n\n')
-	            f.write('Time(s), Temperature(C)')
+	            f.write('Time(s),Temperature(C)\n')
 		self.lastTarget = self.target
 		self.target = self.profile.get_target_temperature(self.runtime)
                 pid = self.pid.compute(self.target, self.temp_sensor.temperature)
 		
-		f.write('%.1f, %.1f' % (self.runtime, self.temp_sensor.temperature))
+		f.write('%.1f,%.1f' % (self.runtime, self.temp_sensor.temperature))
                 log.info("pid: %.3f" % pid)
 				
 		if ((self.target < self.lastTarget) and (self.cooling == 1)):
@@ -175,7 +175,7 @@ class Oven (threading.Thread):
 		    time.sleep(1)
 		    self.set_buzz(False)
 		    time.sleep(1)
-		    #f.write('\n')
+		    f.write('\n')
 		    f.close()
                     self.reset()
             
