@@ -87,6 +87,7 @@ class Oven (threading.Thread):
         self.set_air(False)
 	self.set_buzz(False)
         self.pid = PID(ki=config.pid_ki, kd=config.pid_kd, kp=config.pid_kp)
+	#self.file = self.run.file.close
 	
 	
 
@@ -119,19 +120,18 @@ class Oven (threading.Thread):
                     runtime_delta = datetime.datetime.now() - self.start_time
                     self.runtime = runtime_delta.total_seconds()
                 log.info("running at %.1f deg C (Target: %.1f) , heat %.2f, air %.2f, (%.1fs/%.0f)" % (self.temp_sensor.temperature, self.target, self.heat, self.air, self.runtime, self.totaltime))	#DISABLED DOOR AND COOLING
-                #if self.target <= 0:
+                if self.target <= 0:
                     #now = datetime.datetime.now()
-                    #nameDir = os.path.join('/mnt/logging', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
-		    #f = open(nameDir, 'a')
-		    #f.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
-		    #f.write("Profile: " + self.profile.name + "\n")
-	            #f.write('\n\n')
-	            #f.write('Time(s),Temperature(C)\n')
+                    #self.nameDir = os.path.join('/mnt/logging', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
+		    #self.file = open(nameDir, 'a')
+		    #self.file.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
+		    #self.file.write("Profile: " + self.profile.name + "\n")
+	            #self.file.write('Time(s),Temperature(C)\n')
 		self.lastTarget = self.target
 		self.target = self.profile.get_target_temperature(self.runtime)
                 pid = self.pid.compute(self.target, self.temp_sensor.temperature)
 		
-		#f.write('%.1f,%.1f\n' % (self.runtime, self.temp_sensor.temperature))
+		#self.file.write('%.1f,%.1f\n' % (self.runtime, self.temp_sensor.temperature))
                 log.info("pid: %.3f" % pid)
 				
 		if ((self.target < self.lastTarget) and (self.cooling == 1)):
@@ -179,9 +179,6 @@ class Oven (threading.Thread):
 		    self.door = "OPEN"
 		    time.sleep(1)
 		    self.set_buzz(False)
-		    time.sleep(1)
-		    #f.write('\n')
-		    #f.close()
                     self.reset()
             
             if pid > 0:
