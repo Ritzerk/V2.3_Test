@@ -125,7 +125,7 @@ class Oven (threading.Thread):
                 log.info("running at %.1f deg C (Target: %.1f) , heat %.2f, air %.2f, (%.1fs/%.0f)" % (self.temp_sensor.temperature, self.target, self.heat, self.air, self.runtime, self.totaltime))	#DISABLED DOOR AND COOLING
                 if self.target <= 0:
                     now = datetime.datetime.now()
-                    self.nameDir = os.path.join('/home/pi/V2.3/storage/Log', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
+                    nameDir = os.path.join('/home/pi/V2.3/storage/Log', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
 		    self.file = open(nameDir, 'a')
 		    self.file.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
 		    self.file.write("Profile: " + self.profile.name + "\n")
