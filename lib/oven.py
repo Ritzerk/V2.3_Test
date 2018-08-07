@@ -115,7 +115,7 @@ class Oven (threading.Thread):
 	    self.door = "CLOSED"
 		
             if self.state == Oven.STATE_RUNNING:	
-	        #self.set_air(True)		#Keep fan always on when its running, not needed in this version.
+	        self.set_air(True)		#Keep fan always on when its running
 		
                 if self.simulate:
                     self.runtime += 0.5
@@ -125,7 +125,7 @@ class Oven (threading.Thread):
                 log.info("running at %.1f deg C (Target: %.1f) , heat %.2f, air %.2f, (%.1fs/%.0f)" % (self.temp_sensor.temperature, self.target, self.heat, self.air, self.runtime, self.totaltime))	#DISABLED DOOR AND COOLING
                 if self.target <= 0:
                     now = datetime.datetime.now()
-                    nameDir = os.path.join('/home/pi/V2.3/storage/Log', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
+                    nameDir = os.path.join('/mnt/logs', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
 		    self.file = open(nameDir, 'a')
 		    self.file.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
 		    self.file.write("Profile: " + self.profile.name + "\n")
@@ -170,12 +170,6 @@ class Oven (threading.Thread):
                 last_temp = self.temp_sensor.temperature
                 
                 self.set_heat(pid)
-		
-		if self.temp_sensor.temperature >= 200:
-                    self.set_air(False)
-                elif self.temp_sensor.temperature < 200:
-                    self.set_air(True)
-		
 
                 if self.runtime >= self.totaltime:
 		    self.set_buzz(True)
