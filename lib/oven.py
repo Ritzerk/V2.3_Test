@@ -60,6 +60,7 @@ class Oven (threading.Thread):
         self.daemon = True
         self.simulate = simulate
         self.time_step = time_step
+	self.file = None
         self.reset()
         if simulate:
             self.temp_sensor = TempSensorSimulate(self, 0.5, self.time_step)
@@ -87,7 +88,9 @@ class Oven (threading.Thread):
         self.set_air(False)
 	self.set_buzz(False)
         self.pid = PID(ki=config.pid_ki, kd=config.pid_kd, kp=config.pid_kp)
-	#self.file = self.run.file.close
+	if self.file:
+		self.file.close()
+		self.file = None
 	
 	
 
@@ -120,18 +123,18 @@ class Oven (threading.Thread):
                     runtime_delta = datetime.datetime.now() - self.start_time
                     self.runtime = runtime_delta.total_seconds()
                 log.info("running at %.1f deg C (Target: %.1f) , heat %.2f, air %.2f, (%.1fs/%.0f)" % (self.temp_sensor.temperature, self.target, self.heat, self.air, self.runtime, self.totaltime))	#DISABLED DOOR AND COOLING
-                #if self.target <= 0:
-                    #now = datetime.datetime.now()
-                    #self.nameDir = os.path.join('/mnt/logging', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
-		    #self.file = open(nameDir, 'a')
-		    #self.file.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
-		    #self.file.write("Profile: " + self.profile.name + "\n")
-	            #self.file.write('Time(s),Temperature(C)\n')
+                if self.target <= 0:
+                    now = datetime.datetime.now()
+                    self.nameDir = os.path.join('/home/pi/V2.3/storage/Log', "Date_" + now.strftime("%Y-%m-%d_%H-%M") + ".csv")
+		    self.file = open(nameDir, 'a')
+		    self.file.write(now.strftime("%Y-%m-%d %H:%M") + "\n")
+		    self.file.write("Profile: " + self.profile.name + "\n")
+	            self.file.write('Time(s),Temperature(C)\n')
 		self.lastTarget = self.target
 		self.target = self.profile.get_target_temperature(self.runtime)
                 pid = self.pid.compute(self.target, self.temp_sensor.temperature)
 		
-		#self.file.write('%.1f,%.1f\n' % (self.runtime, self.temp_sensor.temperature))
+		self.file.write('%.1f,%.1f\n' % (self.runtime, self.temp_sensor.temperature))
                 log.info("pid: %.3f" % pid)
 				
 		if ((self.target < self.lastTarget) and (self.cooling == 1)):
