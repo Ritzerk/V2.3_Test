@@ -111,7 +111,7 @@ class Oven (threading.Thread):
 	    self.door = "CLOSED"
 		
             if self.state == Oven.STATE_RUNNING:	
-	        self.set_air(True)		#Keep fan always on when its running
+	        #self.set_air(True)		#Keep fan always on when its running, not needed in this version.
 		
                 if self.simulate:
                     self.runtime += 0.5
@@ -137,12 +137,12 @@ class Oven (threading.Thread):
 		if ((self.target < self.lastTarget) and (self.cooling == 1)):
 		    self.coolMsg = "NOW"
 		    self.set_buzz(True)
-		    time.sleep(0.5)
+		    time.sleep(0.3)
 		    self.coolMsg = "NOT"
 		    self.set_buzz(False)
-		    time.sleep(0.5)
+		    time.sleep(0.3)
 		    self.set_buzz(True)
-		    time.sleep(0.5)
+		    time.sleep(0.3)
 		    self.set_buzz(False)
 		    self.cooling = 0
 				
@@ -167,7 +167,12 @@ class Oven (threading.Thread):
                 last_temp = self.temp_sensor.temperature
                 
                 self.set_heat(pid)
-				
+		
+		if self.temp_sensor.temperature >= 200:
+                    self.set_air(False)
+                elif self.temp_sensor.temperature < 200:
+                    self.set_air(True)
+		
 
                 if self.runtime >= self.totaltime:
 		    self.set_buzz(True)
