@@ -6,6 +6,7 @@ import logging
 import json
 
 import bottle
+from bottle import static_file
 import gevent
 import geventwebsocket
 from gevent.pywsgi import WSGIServer
