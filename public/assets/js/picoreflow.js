@@ -263,12 +263,6 @@ function switchOff()
     }
 }
 
-function getFile()
-{
-	var cmd = {"cmd":"DL"};
-	ws_control.send(JSON.stringify(cmd));
-}
-
 
 function enterNewMode()
 {
