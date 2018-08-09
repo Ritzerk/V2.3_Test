@@ -90,9 +90,6 @@ def handle_control():
             elif msgdict.get("cmd") == "SHUTDOWN":
                 log.info("Shutdown command received")
                 os.system('systemctl poweroff')
-            elif msgdict.get("cmd") == "DL":
-                log.info("Download command received")
-                static_file("downloadMe.txt", root='/home/pi/V2.3_Test/', download = "downloadMe.txt")
         except WebSocketError:
             break
     log.info("websocket (control) closed")
